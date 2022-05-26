@@ -58,8 +58,6 @@ class Square(Resource):
 class Image(Resource):
 
     def post(self):
-        # data = request.get_json()
-        # file_name = data['file_name']
         target = UPLOAD_FOLDER
         if not os.path.isdir(target):
             os.mkdir(target)
@@ -74,16 +72,27 @@ class Image(Resource):
         destination = "\\".join([target, name])
         logger.info("trying to save file ")
         file.save(destination)
-        response = "File sucessfully saved on server"
+        response = jsonify({'message': 'File sucessfully saved on server'})
         return response
-        # obj = jsonify({'message': 'image saved as: ' + file_name})
-        # return obj
+
+
+class SearchParams(Resource):
+    def post(self):
+        logger.info('Starting post search parameters')
+        data = request.get_json()
+        n_of_res = data['num_of_results']
+        solver_type = data['solver']
+        text = 'Send info about ' + str(n_of_res) + \
+            ' to be send, based of ' + str(solver_type) + 'type of solver.'
+        response = jsonify({'message': text})
+        return response
 
 
 # adding the defined resources along with their corresponding urls
 api.add_resource(Hello, '/')
 api.add_resource(Square, '/square/<int:num>')
 api.add_resource(Image, '/uploadImage/')
+api.add_resource(SearchParams, '/search_params/')
 
 
 # driver function
