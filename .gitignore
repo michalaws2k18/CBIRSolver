@@ -130,4 +130,6 @@ dmypy.json
 
 
 # Added by me 
-/test_upload/*
+test_upload/*
+
+!test_upload/.gitkeep
