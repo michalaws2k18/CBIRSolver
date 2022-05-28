@@ -7,11 +7,13 @@ from flask import Flask, jsonify, request, session, flash
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from scripts.logic.main_logic import process_searching
 
 
 # Variables to be defined and changed soon
 UPLOAD_FOLDER = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_upload'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+search_image_path = ""
 
 logging.basicConfig(level=logging.INFO)
 
@@ -52,6 +54,7 @@ class Square(Resource):
 
         return jsonify({'square': num**2})
 
+
 # my rest functions
 
 
@@ -69,9 +72,11 @@ class Image(Resource):
         if name == '':
             logger.info('No selected file')
             name = 'sub.jpg'
+        name = secure_filename(name)
         destination = "\\".join([target, name])
         logger.info("trying to save file ")
         file.save(destination)
+        search_image_path = destination
         response = jsonify({'message': 'File sucessfully saved on server'})
         return response
 
@@ -85,6 +90,13 @@ class SearchParams(Resource):
         text = 'Send info about ' + str(n_of_res) + \
             ' to be send, based of ' + str(solver_type) + 'type of solver.'
         response = jsonify({'message': text})
+        search_params = {
+            'n_of_res': n_of_res,
+            'solver_type': solver_type,
+            'input_image_path': search_image_path
+        }
+
+        process_searching(search_params=search_params)
         return response
 
 
