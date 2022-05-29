@@ -14,7 +14,6 @@ from config import EXAMPLE_IMG_PATH
 # Variables to be defined and changed soon
 UPLOAD_FOLDER = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_upload'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-global SEARCH_IMAGE_PATH
 SEARCH_IMAGE_PATH = ""  # global variable
 
 logging.basicConfig(level=logging.INFO)
@@ -48,15 +47,6 @@ class Hello(Resource):
         data = request.get_json()	 # status code
         return jsonify({'data': data}), 201
 
-
-# another resource to calculate the square of a number
-class Square(Resource):
-
-    def get(self, num):
-
-        return jsonify({'square': num**2})
-
-
 # my rest functions
 
 
@@ -78,7 +68,8 @@ class Image(Resource):
         destination = "\\".join([target, name])
         logger.info("trying to save file ")
         file.save(destination)
-        EXAMPLE_IMG_PATH = deepcopy(destination)
+        global SEARCH_IMAGE_PATH
+        SEARCH_IMAGE_PATH = deepcopy(destination)
         response = jsonify({'message': 'File sucessfully saved on server'})
         return response
 
@@ -96,7 +87,7 @@ class SearchParams(Resource):
         search_params = {
             'n_of_res': n_of_res,
             'solver_type': solver_type,
-            'input_image_path': EXAMPLE_IMG_PATH
+            'input_image_path': SEARCH_IMAGE_PATH
         }
 
         process_searching(search_params=search_params)
@@ -105,7 +96,6 @@ class SearchParams(Resource):
 
 # adding the defined resources along with their corresponding urls
 api.add_resource(Hello, '/')
-api.add_resource(Square, '/square/<int:num>')
 api.add_resource(Image, '/uploadImage/')
 api.add_resource(SearchParams, '/search_params/')
 
