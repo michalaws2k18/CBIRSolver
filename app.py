@@ -1,19 +1,21 @@
 import os
 import logging
-import base64
 
 # using flask_restful
-from flask import Flask, jsonify, request, session, flash
+from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from scripts.logic.main_logic import process_searching
+from copy import deepcopy
+from config import EXAMPLE_IMG_PATH
 
 
 # Variables to be defined and changed soon
 UPLOAD_FOLDER = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_upload'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-search_image_path = ""
+global SEARCH_IMAGE_PATH
+SEARCH_IMAGE_PATH = ""  # global variable
 
 logging.basicConfig(level=logging.INFO)
 
@@ -76,12 +78,13 @@ class Image(Resource):
         destination = "\\".join([target, name])
         logger.info("trying to save file ")
         file.save(destination)
-        search_image_path = destination
+        EXAMPLE_IMG_PATH = deepcopy(destination)
         response = jsonify({'message': 'File sucessfully saved on server'})
         return response
 
 
 class SearchParams(Resource):
+
     def post(self):
         logger.info('Starting post search parameters')
         data = request.get_json()
@@ -93,7 +96,7 @@ class SearchParams(Resource):
         search_params = {
             'n_of_res': n_of_res,
             'solver_type': solver_type,
-            'input_image_path': search_image_path
+            'input_image_path': EXAMPLE_IMG_PATH
         }
 
         process_searching(search_params=search_params)
