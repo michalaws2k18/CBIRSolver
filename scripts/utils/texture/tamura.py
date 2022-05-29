@@ -3,6 +3,13 @@ import cv2
 from scipy.stats import moment
 
 
+def saveTamuraFeatures(img):
+    image = cv2.imread(img)
+    features = get_tamura_features(image)
+    saveas = img[:img.rfind(".jpg")] + "_tam.npy"
+    np.save(saveas, np.array(features.values()))
+
+
 def get_tamura_features(image) -> dict():
     """
     Function to get Tamura features of an image
@@ -132,7 +139,6 @@ def get_directionality(image, threshold=12):
 
     n = 16
     t = 12
-    cnt = 0
     hd = np.zeros(n)
     dlen = deltaG_vec.shape[0]
     for ni in range(n):

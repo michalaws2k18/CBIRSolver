@@ -33,3 +33,7 @@ def getPrecisionAndAccuracyData(TPrate, tnumofgoodimgindb, tnumofres):
     precison = TPrate/tnumofres
     recall = TPrate/tnumofgoodimgindb
     return precison, recall
+
+
+def getANMRR():
+    pass
