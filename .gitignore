@@ -133,3 +133,7 @@ dmypy.json
 test_upload/*
 
 !test_upload/.gitkeep
+
+test_result/*
+
+!test_result/.gitkeep

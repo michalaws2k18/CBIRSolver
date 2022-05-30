@@ -2,13 +2,13 @@ import os
 import logging
 
 # using flask_restful
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from scripts.logic.main_logic import process_searching
 from copy import deepcopy
-from config import EXAMPLE_IMG_PATH
+from config import RESULT_IMAGE_PATH
 
 
 # Variables to be defined and changed soon
@@ -91,7 +91,7 @@ class SearchParams(Resource):
         }
 
         process_searching(search_params=search_params)
-        return response
+        return send_file(RESULT_IMAGE_PATH, mimetype='image')
 
 
 # adding the defined resources along with their corresponding urls
