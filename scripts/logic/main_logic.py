@@ -1,5 +1,5 @@
 import logging
-from scripts.logic.one_image_c import process_classic_solver
+from scripts.logic.one_image import process_classic_solver, process_ml_solver
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,7 +15,10 @@ def process_searching(search_params):
     if solver_type == 1:
         # ML solver used here
         logger.info('Wybrano solver ML')
-        pass
+        closest_images = process_ml_solver(
+            n_of_res=n_of_res,
+            input_image_path=input_image_path)
+        logger.info(closest_images)
     elif solver_type == 2:
         # Classic logic used here
         logger.info('Wybrano solver klasyczny')

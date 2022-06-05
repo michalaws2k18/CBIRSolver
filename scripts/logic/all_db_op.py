@@ -1,6 +1,6 @@
 import os
 from scripts.utils.calculate_and_save_hist import calculatesaveHistogram
-from config import N_BINS, SEARCH_DIRECTORY
+from config import N_BINS, SEARCH_DIRECTORY_C
 
 
 def indexImagesInDB(directory):
@@ -12,4 +12,4 @@ def indexImagesInDB(directory):
 
 
 if __name__ == '__main__':
-    indexImagesInDB(SEARCH_DIRECTORY)
+    indexImagesInDB(SEARCH_DIRECTORY_C)

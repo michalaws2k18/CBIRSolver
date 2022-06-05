@@ -13,7 +13,11 @@ def convertNpyPathsToJpeg(closest_img_paths_npy):
     return imagepaths
 
 
-def getTheClosestImages(numberofresults, inputimagehistogram, search_dir, distMetric):
+def getTheClosestImages(
+        numberofresults,
+        inputimagehistogram,
+        search_dir,
+        distMetric):
     distancelist = []
     for subdir, dirs, files in os.walk(search_dir):
         for file in files:
@@ -33,12 +37,12 @@ def createResultImage(closest_images_path, save_img_path, n_of_res):
     nrows = n_of_res//ncols
     if n_of_res % ncols != 0:
         nrows = nrows+1
-    figsize = [12, 8]
+    figsize = [12, 3*nrows]
 
     # create figure (fig), and array of axes (ax)
     fig, ax = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
     fig.subplots_adjust(hspace=0.4)
-    fig.subplots_adjust(wspace=0)
+    fig.subplots_adjust(wspace=0.1)
 
     # plot simple raster image on each sub-plot
     for i in range(n_of_res):
