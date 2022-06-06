@@ -1,24 +1,29 @@
 import numpy as np
 import cv2
 from scipy.stats import moment
+from scripts.utils.calculate_and_save_hist import calculateHistogram
+from config import N_BINS
 
 
-def saveTamuraFeatures(img):
-    image = cv2.imread(img)
-    features = get_tamura_features(image)
-    saveas = img[:img.rfind(".jpg")] + "_tam.npy"
-    np.save(saveas, np.array(features.values()))
+def saveTamuraFeatures(input_image_path):
+    features_tam = get_tamura_features(input_image_path)
+    features_hist = calculateHistogram(N_BINS, input_image_path)
+    saveas = input_image_path[:input_image_path.rfind(".jpg")] + "_tam.npy"
+    features = np.append(np.array(features_hist),
+                         np.array(features_tam.values()))
+    np.save(saveas, features)
 
 
-def get_tamura_features(image) -> dict():
+def get_tamura_features(input_image_path) -> dict():
     """
     Function to get Tamura features of an image
 Args:
-        image: OpenCV grayscale image ndarray like
+        image: path to image file
 
 Returns:
         dict: dictionary of features (coarseness, contrast, directionality)
     """
+    image = cv2.imread(input_image_path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     features = dict()
 
@@ -30,7 +35,7 @@ Returns:
 
 def get_coarseness(image):
 
-    assert image.shape[0] > 64 and image.shape[1] >= 64, "Image dimensions should be minimum 64X64"
+    assert image.shape[0] > 64 and image.shape[1] >= 64, "Image dimensions should be minimum 64X64"  # noqa
 
     image = cv2.resize(image, (1024, 1024))
     H, W = image.shape[:2]
@@ -143,7 +148,7 @@ def get_directionality(image, threshold=12):
     dlen = deltaG_vec.shape[0]
     for ni in range(n):
         for k in range(dlen):
-            if((deltaG_vec[k] >= t) and (theta_vec[k] >= (2*ni-1) * np.pi / (2 * n)) and (theta_vec[k] < (2*ni+1) * np.pi / (2 * n))):
+            if((deltaG_vec[k] >= t) and (theta_vec[k] >= (2*ni-1) * np.pi / (2 * n)) and (theta_vec[k] < (2*ni+1) * np.pi / (2 * n))):  # noqa
                 hd[ni] += 1
     hd = hd / np.mean(hd)
     hd_max_index = np.argmax(hd)

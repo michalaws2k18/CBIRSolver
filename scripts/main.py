@@ -7,7 +7,7 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import glob
-import time 
+import time
 
 
 directory = 'D:\Dokumenty\CBIR\CorelDB'
@@ -42,7 +42,8 @@ for subdir, dirs, files in os.walk(directory):
         filepath = subdir + os.sep + file
         # print(filepath)
         if filepath.endswith(".npy"):
-            distance = calculateDistanceManhattan(filepath, inputimagehistogram1)
+            distance = calculateDistanceManhattan(
+                filepath, inputimagehistogram1)
             distancelist.append((distance, filepath))
 
 distancelist.sort(key=lambda tup: tup[0])
