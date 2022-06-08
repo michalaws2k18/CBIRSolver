@@ -25,14 +25,15 @@ def getTheClosestImages(
         numberofresults,
         inputimagehistogram,
         search_dir,
-        distMetric):
+        distMetric,
+        separator: None):
     distancelist = []
     for subdir, dirs, files in os.walk(search_dir):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
                 distance = calculateDistance(
-                    filepath, inputimagehistogram, distMetric)
+                    filepath, inputimagehistogram, distMetric, separator)
                 distancelist.append((distance, filepath))
     distancelist.sort(key=lambda tup: tup[0])
     theclosestimages_npy = distancelist[:numberofresults]
@@ -63,6 +64,15 @@ def createResultImage(closest_images_path, save_img_path, n_of_res):
                       nrows].set_title("D=" + str(closest_images_path[i][0]))
         # remove_prefix(str(imagepaths[i][1]), directory)+" "
     plt.savefig(save_img_path)
+
+
+def replaceStrInListFromRight(closest_img_paths_npy, str_to_replace, replacement_str):
+    imagepaths = []
+    for i in range(len(closest_img_paths_npy)):
+        imagepath = closest_img_paths_npy[i][1]
+        imagepath = replacement_str.join(imagepath.rsplit(str_to_replace, 1))
+        imagepaths.append((closest_img_paths_npy[i][0], imagepath))
+    return imagepaths
 
 
 # def indexImagesInDB(directory, indexFunc):

@@ -6,7 +6,7 @@ from config import N_BINS
 
 
 def saveHistTamuraFeatures(input_image_path):
-    features_tam = get_tamura_features(input_image_path)
+    features_tam = getTamuraFeatures(input_image_path)
     features_hist = calculateHistogram(N_BINS, input_image_path)
     saveas = input_image_path[:input_image_path.rfind(".jpg")] + "_tam.npy"
     features = np.append(features_hist, features_tam)
@@ -14,7 +14,7 @@ def saveHistTamuraFeatures(input_image_path):
     return saveas
 
 
-def get_tamura_features(input_image_path) -> dict():
+def getTamuraFeatures(input_image_path) -> dict():
     """
     Function to get Tamura features of an image
 Args:
@@ -36,7 +36,7 @@ Returns:
 
 def get_coarseness(image):
 
-    assert image.shape[0] > 64 and image.shape[1] >= 64, "Image dimensions should be minimum 64X64"  # noqa
+    assert image.shape[0] > 64 and image.shape[1] >= 64, "Image dimensions should be minimum 64X64"
 
     image = cv2.resize(image, (1024, 1024))
     H, W = image.shape[:2]

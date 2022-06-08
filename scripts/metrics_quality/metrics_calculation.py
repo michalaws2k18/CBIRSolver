@@ -57,7 +57,9 @@ def calculateDistanceMinkowski(filepath, inputimagedata):
     return result
 
 
-def calculateDistance(filepath, inputimagedata, func):
+def calculateDistance(filepath, inputimagedata, func, separator=None):
     data = np.load(filepath)
+    if separator:
+        data = data[separator[0]: separator[1]]
     result = func(data, inputimagedata)
     return result
