@@ -5,13 +5,13 @@ from scripts.utils.calculate_and_save_hist import calculateHistogram
 from config import N_BINS
 
 
-def saveTamuraFeatures(input_image_path):
+def saveHistTamuraFeatures(input_image_path):
     features_tam = get_tamura_features(input_image_path)
     features_hist = calculateHistogram(N_BINS, input_image_path)
     saveas = input_image_path[:input_image_path.rfind(".jpg")] + "_tam.npy"
-    features = np.append(np.array(features_hist),
-                         np.array(features_tam.values()))
+    features = np.append(features_hist, features_tam)
     np.save(saveas, features)
+    return saveas
 
 
 def get_tamura_features(input_image_path) -> dict():
@@ -30,7 +30,8 @@ Returns:
     features["coarseness"] = get_coarseness(gray)
     features["contrast"] = get_contrast(gray)
     features["directionality"] = get_directionality(gray)
-    return features
+
+    return list(features.values())
 
 
 def get_coarseness(image):

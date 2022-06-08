@@ -13,6 +13,14 @@ def convertNpyPathsToJpeg(closest_img_paths_npy):
     return imagepaths
 
 
+def deleteNpyfromfolder(folder_path):
+    for subdir, dirs, files in os.walk(folder_path):
+        for file in files:
+            filepath = subdir + os.sep + file
+            if filepath.endswith(".npy"):
+                os.remove(filepath)
+
+
 def getTheClosestImages(
         numberofresults,
         inputimagehistogram,
