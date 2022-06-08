@@ -1,8 +1,8 @@
 import os
 import math
-from calculate_and_save_hist import calculatesaveHistogram, calculateHistogram
-from metrics_calculation import calculateDistanceEukliedian, calculateDistanceMaksimum, calculateDistanceManhattan, calculateDistanceMinkowski
-from quality_indicators import getTP, getPrecisionAndAccuracyData
+from utils.calculate_and_save_hist import calculatesaveHistogram, calculateHistogram
+from metrics_quality.metrics_calculation import calculateDistanceEukliedian, calculateDistanceMaksimum, calculateDistanceManhattan, calculateDistanceMinkowski
+from metrics_quality.quality_indicators import getTP, getPrecisionAndAccuracyData
 import cv2
 import matplotlib.pyplot as plt
 import random
@@ -29,7 +29,8 @@ def getTheClosestImages(numberofresults, inputimagehistogram):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
-                distance = calculateDistanceManhattan(filepath, inputimagehistogram)
+                distance = calculateDistanceManhattan(
+                    filepath, inputimagehistogram)
                 distancelist.append((distance, filepath))
     distancelist.sort(key=lambda tup: tup[0])
     theclosestimages = distancelist[:numberofresults]
@@ -42,7 +43,8 @@ def getTheClosestImagesManhattan(numberofresults, inputimagehistogram):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
-                distance = calculateDistanceManhattan(filepath, inputimagehistogram)
+                distance = calculateDistanceManhattan(
+                    filepath, inputimagehistogram)
                 distancelist.append((distance, filepath))
     distancelist.sort(key=lambda tup: tup[0])
     theclosestimages = distancelist[:numberofresults]
@@ -55,7 +57,8 @@ def getTheClosestImagesEukliedian(numberofresults, inputimagehistogram):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
-                distance = calculateDistanceEukliedian(filepath, inputimagehistogram)
+                distance = calculateDistanceEukliedian(
+                    filepath, inputimagehistogram)
                 distancelist.append((distance, filepath))
     distancelist.sort(key=lambda tup: tup[0])
     theclosestimages = distancelist[:numberofresults]
@@ -68,7 +71,8 @@ def getTheClosestImagesMinkowski(numberofresults, inputimagehistogram):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
-                distance = calculateDistanceMinkowski(filepath, inputimagehistogram)
+                distance = calculateDistanceMinkowski(
+                    filepath, inputimagehistogram)
                 distancelist.append((distance, filepath))
     distancelist.sort(key=lambda tup: tup[0])
     theclosestimages = distancelist[:numberofresults]
@@ -81,7 +85,8 @@ def getTheClosestImagesMaksimum(numberofresults, inputimagehistogram):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
-                distance = calculateDistanceMaksimum(filepath, inputimagehistogram)
+                distance = calculateDistanceMaksimum(
+                    filepath, inputimagehistogram)
                 distancelist.append((distance, filepath))
     distancelist.sort(key=lambda tup: tup[0])
     theclosestimages = distancelist[:numberofresults]
@@ -109,7 +114,8 @@ def showImageResults(imagepaths, numberofresults):
         img = cv2.imread(imagepaths[i][1])
         ax[i % nrows][i // nrows].imshow(img, alpha=1)
         ax[i % nrows][i // nrows].axis('off')
-        ax[i % nrows][i // nrows].set_title((str(imagepaths[i][1])).removeprefix(directory)+" "+str(imagepaths[i][0]))
+        ax[i % nrows][i // nrows].set_title(
+            (str(imagepaths[i][1])).removeprefix(directory)+" "+str(imagepaths[i][0]))
     plt.show()
 
 
@@ -122,7 +128,8 @@ def selectRandomInputImages(numberofinputsinoneclass):
             if filepath.endswith(".jpg"):
                 allimagesinclass.append(filepath)
         if len(allimagesinclass) > numberofinputsinoneclass:
-            selectedimages = random.sample(allimagesinclass, numberofinputsinoneclass)
+            selectedimages = random.sample(
+                allimagesinclass, numberofinputsinoneclass)
             inputimages.append(selectedimages)
     return inputimages
 
@@ -135,8 +142,10 @@ def run_test(numberofbins, numberofresults, inputpictures):
     for inputpicturesclass in inputpictures:
         resultclassdata = []
         for inputpicture in inputpicturesclass:
-            inputimagehistogram1 = calculateHistogram(numberofbins, inputpicture)
-            theclosestimages = getTheClosestImages(numberofresults, inputimagehistogram1)
+            inputimagehistogram1 = calculateHistogram(
+                numberofbins, inputpicture)
+            theclosestimages = getTheClosestImages(
+                numberofresults, inputimagehistogram1)
             theclosestimagepaths = getListofImagesPaths(theclosestimages)
             # showImageResults(theclosestimagepaths, numberofresults)
             classpath = os.path.dirname(inputpicture)
@@ -146,8 +155,10 @@ def run_test(numberofbins, numberofresults, inputpictures):
         totalnumberofgoodimgindb = len(glob.glob1(classpath, "*.jpg"))
         averageTP = sum(resultclassdata)/len(resultclassdata)
         resultclassdata.insert(0, classpath)
-        resultclassdata.extend([averageTP, totalnumberofresults, totalnumberofgoodimgindb])
-        precision, recall = getPrecisionAndAccuracyData(averageTP, totalnumberofgoodimgindb, totalnumberofresults)
+        resultclassdata.extend(
+            [averageTP, totalnumberofresults, totalnumberofgoodimgindb])
+        precision, recall = getPrecisionAndAccuracyData(
+            averageTP, totalnumberofgoodimgindb, totalnumberofresults)
         resultclassdata.extend([precision, recall])
         resultsdata.append(resultclassdata)
         savefilename = "resultsMinkowski_" + str(numberofbins) + "bins.csv"

@@ -24,7 +24,7 @@ def distanceMaksimum(X, Y):
     return max_value
 
 
-def distanceMinkowski(X, Y, p):
+def distanceMinkowski(X, Y, p=2):
     result = np.subtract(X, Y)
     result = np.absolute(result)
     result = np.power(result, p)
@@ -54,4 +54,10 @@ def calculateDistanceMaksimum(filepath, inputimagedata):
 def calculateDistanceMinkowski(filepath, inputimagedata):
     data = np.load(filepath)
     result = distanceMinkowski(data, inputimagedata, 2)
+    return result
+
+
+def calculateDistance(filepath, inputimagedata, func):
+    data = np.load(filepath)
+    result = func(data, inputimagedata)
     return result
