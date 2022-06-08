@@ -1,0 +1,19 @@
+{
+  "files.insertFinalNewline": true,
+  "python.linting.flake8Args": [
+    "--max-line-length=120",
+    "--ignore=E402,F841,F401,E302,E305,E226"
+  ],
+  "python.defaultInterpreterPath": "D:\\Aplikacje2\\Anaconda\\Anaconda3\\envs\\python_vscode",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.defaultFormatter": "ms-python.vscode-pylance"
+}
