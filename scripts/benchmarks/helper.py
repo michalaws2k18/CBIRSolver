@@ -26,19 +26,24 @@ def getTheClosestImages(
         inputimagehistogram,
         search_dir,
         distMetric,
-        separator: None):
+        separator=None):
+    distancelist = getListOfDistances(inputimagehistogram, search_dir, distMetric, separator)
+    distancelist_sorted = sorted(distancelist, key=lambda tup: tup[0])
+    theclosestimages_npy = distancelist_sorted[:numberofresults]
+    theclosestimages_npy_norm = normalizeDistanceList(theclosestimages_npy, distancelist_sorted[-1][0])
+    theclosestimages = convertNpyPathsToJpeg(theclosestimages_npy_norm)
+    return theclosestimages
+
+def getListOfDistances(input_img_hist, search_dir, dist_metric, separator=None):
     distancelist = []
     for subdir, dirs, files in os.walk(search_dir):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
                 distance = calculateDistance(
-                    filepath, inputimagehistogram, distMetric, separator)
+                    filepath, input_img_hist, dist_metric, separator)
                 distancelist.append((distance, filepath))
-    distancelist.sort(key=lambda tup: tup[0])
-    theclosestimages_npy = distancelist[:numberofresults]
-    theclosestimages = convertNpyPathsToJpeg(theclosestimages_npy)
-    return theclosestimages
+    return distancelist
 
 
 def createResultImage(closest_images_path, save_img_path, n_of_res):
@@ -60,8 +65,7 @@ def createResultImage(closest_images_path, save_img_path, n_of_res):
         rgb_img = cv2.merge([r, g, b])
         ax[i % nrows][i // nrows].imshow(rgb_img)
         ax[i % nrows][i // nrows].axis('off')
-        ax[i % nrows][i //
-                      nrows].set_title("D=" + str(closest_images_path[i][0]))
+        ax[i % nrows][i // nrows].set_title("D=" + str(closest_images_path[i][0]))
         # remove_prefix(str(imagepaths[i][1]), directory)+" "
     plt.savefig(save_img_path)
 
@@ -74,10 +78,56 @@ def replaceStrInListFromRight(closest_img_paths_npy, str_to_replace, replacement
         imagepaths.append((closest_img_paths_npy[i][0], imagepath))
     return imagepaths
 
+def normalizeDistance(dist_value, denominator, limit=1000):
+    return dist_value/denominator*limit
 
-# def indexImagesInDB(directory, indexFunc):
-#     for subdir, dirs, files in os.walk(directory):
-#         for file in files:
-#             filepath = subdir + os.sep + file
-#             if filepath.endswith(".jpg"):
-#                 calculatesaveHistogram(numberofbins, filepath)
+def normalizeDistanceList(distnace_list, denominator, limit=1000):
+    normalized_list = []
+    for elem in distnace_list:
+        norm_dist = normalizeDistance(elem[0], denominator, limit)
+        normalized_list.append((norm_dist, elem[1]))
+    return normalized_list
+
+def getTheClosestImagesCoef(
+        numberofresults,
+        inputimagehistogram,
+        inputimageTamura,
+        search_dir,
+        distMetric,
+        separator,
+        coefficients):
+    distancelistHist = getListOfDistances(inputimagehistogram, search_dir, distMetric, separator[:2])
+    distancelistTam = getListOfDistances(inputimageTamura, search_dir, distMetric, separator[1:3])
+    distancelistHist_sorted = sorted(distancelistHist, key=lambda tup: tup[0])
+    distancelistTam_sorted = sorted(distancelistTam, key=lambda tup: tup[0])
+    distancelistHist_norm = normalizeDistanceList(distancelistHist, distancelistHist_sorted[-1][0])
+    distancelistTam_norm = normalizeDistanceList(distancelistTam, distancelistTam_sorted[-1][0])
+    distancelistHist_norm_multi = multiplyDistanceByCoeff(distancelistHist_norm, coefficients[0])
+    distancelistTam_norm_multi = multiplyDistanceByCoeff(distancelistTam_norm, coefficients[1])
+    distancelist_joined = joinTwoLists(distancelistHist_norm_multi, distancelistTam_norm_multi)
+    distancelist_joined_sorted = sorted(distancelist_joined, key=lambda tup: tup[0])
+    distancelist_joined_limited = distancelist_joined_sorted[:numberofresults]
+    distancelist_joined_limited_norm = normalizeDistanceList(distancelist_joined_limited, distancelist_joined_sorted[-1][0])
+    theclosestimages = convertNpyPathsToJpeg(distancelist_joined_limited_norm)
+    return theclosestimages
+
+
+def multiplyDistanceByCoeff(distance_list, coefficient):
+    result = []
+    for elem in distance_list:
+        result.append((elem[0]*coefficient, elem[1]))
+    return result
+
+def joinTwoLists(distance_hist, distance_Tam):
+    result = []
+    if len(distance_hist) == len(distance_Tam):
+        for index in range(len(distance_hist)):
+            if distance_hist[index][1] == distance_Tam[index][1]:
+                result.append((distance_hist[index][0]+distance_Tam[index][0], distance_hist[index][1]))
+            else:
+                print('the paths are not equal')
+                result.append((None, None))
+        return result
+    else:
+        print('distance lists not same length')
+        return []
