@@ -32,6 +32,17 @@ def distanceMinkowski(X, Y, p=2):
     value = pow(value, 1/p)
     return value
 
+def distanceChi2(X, Y):
+    for elem in list(zip(X, Y)):
+        to_sum = []
+        if (elem[0] + elem[1]) == 0:
+            to_sum.append(0)
+        else:
+            part = ((elem[0]-elem[1]) ** 2) / (elem[0] + elem[1])
+            to_sum.append(part)
+    chi = 0.5 * np.sum(to_sum)
+    return chi
+
 
 def calculateDistanceManhattan(filepath, inputimagedata):
     data = np.load(filepath)

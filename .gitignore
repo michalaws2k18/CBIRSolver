@@ -137,3 +137,6 @@ test_upload/*
 test_result/*
 
 !test_result/.gitkeep
+
+fast_false.png
+fast_true.png

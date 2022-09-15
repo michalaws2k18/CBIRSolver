@@ -1,6 +1,7 @@
 import logging
 from scripts.logic.one_image import (process_hist_solver, process_ml_solver,
-                                    process_tamura_solver, process_hist_tamura_solver)
+                                        process_tamura_solver, process_hist_tamura_solver,
+                                        processSIFTsolver)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -38,6 +39,13 @@ def process_searching(search_params):
         # Classic histogram and Tamura features
         logger.info('Wybrano solver klasyczny - histogram oraz cechy Tamury')
         closest_images = process_hist_tamura_solver(
+            n_of_res=n_of_res,
+            input_image_path=input_image_path)
+        logger.info(closest_images)
+    elif solver_type == 5:
+        # Classic histogram and Tamura features
+        logger.info('Wybrano solver w oparciu o deskryptor SIFT')
+        closest_images = processSIFTsolver(
             n_of_res=n_of_res,
             input_image_path=input_image_path)
         logger.info(closest_images)

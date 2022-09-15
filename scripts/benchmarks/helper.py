@@ -40,9 +40,10 @@ def getListOfDistances(input_img_hist, search_dir, dist_metric, separator=None):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".npy"):
-                distance = calculateDistance(
-                    filepath, input_img_hist, dist_metric, separator)
-                distancelist.append((distance, filepath))
+                if not filepath.endswith("cluster_centres.npy"):
+                    distance = calculateDistance(
+                        filepath, input_img_hist, dist_metric, separator)
+                    distancelist.append((distance, filepath))
     return distancelist
 
 
@@ -107,7 +108,8 @@ def getTheClosestImagesCoef(
     distancelist_joined = joinTwoLists(distancelistHist_norm_multi, distancelistTam_norm_multi)
     distancelist_joined_sorted = sorted(distancelist_joined, key=lambda tup: tup[0])
     distancelist_joined_limited = distancelist_joined_sorted[:numberofresults]
-    distancelist_joined_limited_norm = normalizeDistanceList(distancelist_joined_limited, distancelist_joined_sorted[-1][0])
+    distancelist_joined_limited_norm = normalizeDistanceList(distancelist_joined_limited,
+                                                                distancelist_joined_sorted[-1][0])
     theclosestimages = convertNpyPathsToJpeg(distancelist_joined_limited_norm)
     return theclosestimages
 

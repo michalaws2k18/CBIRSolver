@@ -1,8 +1,9 @@
 import os
 import random
+from config import SEARCH_DIRECTORY_THIN_SIFT
 
 
-directory = r'D:\Dokumenty\CBIR\CorelDBthin'
+directory = SEARCH_DIRECTORY_THIN_SIFT
 
 # for subdir, dirs, files in os.walk(directory):
 #     fileslist = []
