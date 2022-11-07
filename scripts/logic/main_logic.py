@@ -1,7 +1,9 @@
 import logging
-from scripts.logic.one_image import (process_hist_solver, process_ml_solver,
+from scripts.benchmarks.helper import covertPathToLocalPath
+from scripts.logic.one_image import (calcIndicatPrecisRecall, process_hist_solver, process_ml_solver,
                                         process_tamura_solver, process_hist_tamura_solver,
                                         processSIFTsolver)
+from copy import deepcopy
 
 logging.basicConfig(level=logging.INFO)
 
@@ -14,6 +16,7 @@ def process_searching(search_params):
     solver_type = search_params['solver_type']
     n_of_res = search_params['n_of_res']
     input_image_path = search_params['input_image_path']
+    closest_images = []
     if solver_type == 1:
         # ML solver used here
         logger.info('Wybrano solver ML')
@@ -51,3 +54,18 @@ def process_searching(search_params):
         logger.info(closest_images)
     else:
         logger.info('Podany typ solvera nie istnieje')
+    return closest_images, input_image_path
+
+
+def prepareAllData(closest_images, input_image_path):
+    precision, recall = calcIndicatPrecisRecall(input_image_path, closest_images)
+    closest_images_local = []
+    for item in closest_images:
+        item_local_path = covertPathToLocalPath(item[1])
+        closest_images_local.append((item[0], item_local_path))
+    data = {
+        "precision": precision,
+        "recall": recall,
+        "closest_images_paths": closest_images_local
+    }
+    return data

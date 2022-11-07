@@ -1,4 +1,5 @@
 
+from scripts.metrics_quality.quality_indicators import getPrecisionAndAccuracy
 from scripts.utils.texture.tamura import getTamuraFeatures
 from scripts.logic.ml_model import extractFeatures
 from scripts.metrics_quality.metrics_calculation import distanceManhattan, distanceEukliedian, distanceChi2
@@ -62,3 +63,9 @@ def processSIFTsolver(n_of_res, input_image_path):
     createResultImage(closest_images,
                       RESULT_IMAGE_PATH, n_of_res)
     return closest_images
+
+
+def calcIndicatPrecisRecall(input_image_path, closest_images):
+    classpath = os.path.dirname(input_image_path)
+    precision, recall = getPrecisionAndAccuracy(closest_images, classpath)
+    return precision, recall

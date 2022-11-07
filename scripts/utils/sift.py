@@ -1,7 +1,9 @@
 import os
 import random
+from cv2 import kmeans
 import numpy as np
 import cv2
+import statistics
 from sklearn.cluster import KMeans
 from scripts.metrics_quality.metrics_calculation import distanceEukliedian
 from config import EXAMPLE_IMG_PATH
@@ -75,3 +77,35 @@ def initialiseSIFTOps(DBPath, sample_files_list, clusters_num):
     kmeans.fit(all_descs)
     saveList(centers_path, kmeans.cluster_centers_)
     return sift, kmeans
+
+
+"""Second way of SIFT descripotor use"""
+
+def initialiseSIFTOps2Way(clusters_num):
+    sift = cv2.SIFT_create(nfeatures=20)
+    kmeans_model = KMeans(init="k-means++", n_clusters=clusters_num, n_init=20, max_iter=400, random_state=42)
+    return sift, kmeans_model
+
+def indexDBbyOwnDesc(DBPath, model, kmeans_model):
+    for subdir, dirs, files in os.walk(DBPath):
+        for file in files:
+            filepath = subdir + os.sep + file
+            if filepath.endswith(".jpg"):
+                features = obtainOwnDesc(filepath, kmeans_model, model)
+                saveas = filepath[:filepath.rfind(".jpg")] + ".npy"
+                np.save(saveas, features)
+
+
+def obtainOwnDesc(image_path, kmeans_model, model):
+    img = cv2.imread(image_path)
+    img_grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    sift_kp, sift_desc = model.detectAndCompute(img_grey, None)
+    num_desc = len(sift_desc)
+    num_kp = len(sift_kp)
+    print(f"desc:{num_desc} kp: {num_kp}")
+    result = kmeans_model.fit(sift_desc)
+    final_desc = []
+    for elem in result.cluster_centers_:
+        mean = statistics.mean(elem)
+        final_desc.append(mean)
+    return final_desc

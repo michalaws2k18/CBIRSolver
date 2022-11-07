@@ -6,9 +6,10 @@ from flask import Flask, jsonify, request, send_file
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from scripts.logic.main_logic import process_searching
+from scripts.logic.main_logic import prepareAllData, process_searching
 from copy import deepcopy
 from config import RESULT_IMAGE_PATH
+from markupsafe import escape
 
 
 # Variables to be defined and changed soon
@@ -63,6 +64,10 @@ def get():
     logger.info(RESULT_IMAGE_PATH)
     return send_file(RESULT_IMAGE_PATH)
 
+@app.route('/getResultsData', methods=['GET'])
+def getResults():
+    logger.info('in getting all the results data')
+
 
 @app.route('/search_params', methods=['POST'])
 def post():
@@ -72,18 +77,21 @@ def post():
     solver_type = data['solver']
     text = 'Send info about ' + str(n_of_res) + \
         ' to be send, based of ' + str(solver_type) + 'type of solver.'
-    response = jsonify({'message': 'http://127.0.0.1:5000/getResultsImage'})
     search_params = {
         'n_of_res': n_of_res,
         'solver_type': solver_type,
         'input_image_path': SEARCH_IMAGE_PATH
     }
 
-    process_searching(search_params=search_params)
-    return response
+    closest_images, input_image_path = process_searching(search_params=search_params)
+    data = prepareAllData(closest_images, input_image_path)
+    exit_data = {
+        'info': data,
+        'image': 'http://127.0.0.1:5000/getResultsImage',
+    }
+    return jsonify(exit_data)
 
 
-# driver function
-if __name__ == '__main__':
-
-    app.run(debug=True)
+@app.route("/<path:subpath>")
+def getImageByPath(subpath):
+    return send_file(escape(subpath))

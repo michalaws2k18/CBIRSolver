@@ -133,3 +133,10 @@ def joinTwoLists(distance_hist, distance_Tam):
     else:
         print('distance lists not same length')
         return []
+
+def covertPathToLocalPath(image_primary_path):
+    subpath = os.path.normpath(image_primary_path)
+    head, tail = os.path.split(subpath)
+    head2, tail2 = os.path.split(head)
+    res_path = os.path.join('http://127.0.0.1:5000/images_db/', tail2, tail)
+    return res_path

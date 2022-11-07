@@ -5,3 +5,4 @@ SEARCH_DIRECTORY_C = r'D:\Dokumenty\CBIR\CorelDB'
 RESULT_IMAGE_PATH = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_result\result_img.png'  # noqa
 SEARCH_DIRECTORY_C_TAM = r'D:\Dokumenty\CBIR\CorelDBthinTamura'
 SEARCH_DIRECTORY_THIN_SIFT = r'D:\Dokumenty\CBIR\CorelDBthinSIFT'
+SEARCH_DIRECTORY_THIN_SIFT_2 = r'D:\Dokumenty\CBIR\CorelDBthinSIFT2'
