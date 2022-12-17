@@ -6,3 +6,5 @@ RESULT_IMAGE_PATH = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_result\resu
 SEARCH_DIRECTORY_C_TAM = r'D:\Dokumenty\CBIR\CorelDBthinTamura'
 SEARCH_DIRECTORY_THIN_SIFT = r'D:\Dokumenty\CBIR\CorelDBthinSIFT'
 SEARCH_DIRECTORY_THIN_SIFT_2 = r'D:\Dokumenty\CBIR\CorelDBthinSIFT2'
+SEARCH_DIRECTORY_THIN_HIST_EQUAL = r'D:\Dokumenty\CBIR\CorelDBthinEqualHist'
+SEARCH_DIRECTORY_THIN_HIST_NORM = r'D:\Dokumenty\CBIR\CorelDBthinNormHist'

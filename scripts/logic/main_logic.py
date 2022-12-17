@@ -1,8 +1,8 @@
 import logging
 from scripts.benchmarks.helper import covertPathToLocalPath
 from scripts.logic.one_image import (calcIndicatPrecisRecall, process_hist_solver, process_ml_solver,
-                                        process_tamura_solver, process_hist_tamura_solver,
-                                        processSIFTsolver)
+                                     process_tamura_solver, process_hist_tamura_solver,
+                                     processSIFTsolver, getTPandFP, processHistSolverEqual)
 from copy import deepcopy
 
 logging.basicConfig(level=logging.INFO)
@@ -17,7 +17,10 @@ def process_searching(search_params):
     n_of_res = search_params['n_of_res']
     input_image_path = search_params['input_image_path']
     closest_images = []
-    if solver_type == 1:
+    if solver_type == 0:
+        # test all solver algorithms
+        logger.info('Testowanie dostępnych algorytmów')
+    elif solver_type == 1:
         # ML solver used here
         logger.info('Wybrano solver ML')
         closest_images = process_ml_solver(
@@ -52,20 +55,38 @@ def process_searching(search_params):
             n_of_res=n_of_res,
             input_image_path=input_image_path)
         logger.info(closest_images)
+    elif solver_type == 7:
+        # Classic histogram and Tamura features
+        logger.info('Wybrano solver w oparciu o wyrównany histogram')
+        closest_images = processHistSolverEqual(
+            n_of_res=n_of_res,
+            input_image_path=input_image_path)
+        logger.info(closest_images)
     else:
         logger.info('Podany typ solvera nie istnieje')
     return closest_images, input_image_path
 
 
 def prepareAllData(closest_images, input_image_path):
-    precision, recall = calcIndicatPrecisRecall(input_image_path, closest_images)
     closest_images_local = []
+    nofres = len(closest_images)
+    precision, recall = calcIndicatPrecisRecall(
+        input_image_path, closest_images)
+    TP, FP = getTPandFP(input_image_path, closest_images)
+    print(input_image_path)
+    print(closest_images)
     for item in closest_images:
         item_local_path = covertPathToLocalPath(item[1])
         closest_images_local.append((item[0], item_local_path))
+    # input_image_path_local = covertPathToLocalPath(input_image_path)
+    print(precision)
+    print(recall)
     data = {
         "precision": precision,
         "recall": recall,
+        "TP": TP,
+        "FP": FP,
+        "nofres": nofres,
         "closest_images_paths": closest_images_local
     }
     return data

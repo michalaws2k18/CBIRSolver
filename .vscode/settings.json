@@ -15,5 +15,8 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.defaultFormatter": "ms-python.vscode-pylance"
+  "editor.defaultFormatter": "ms-python.vscode-pylance",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  }
 }

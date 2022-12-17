@@ -1,9 +1,10 @@
 import os
 import random
-from config import SEARCH_DIRECTORY_THIN_SIFT, SEARCH_DIRECTORY_THIN_SIFT_2
+from config import (SEARCH_DIRECTORY_THIN_SIFT, SEARCH_DIRECTORY_THIN_SIFT_2, SEARCH_DIRECTORY_THIN_HIST_EQUAL,
+                    SEARCH_DIRECTORY_THIN_HIST_NORM)
 
 
-directory = SEARCH_DIRECTORY_THIN_SIFT_2
+directory = SEARCH_DIRECTORY_THIN_HIST_NORM
 
 # for subdir, dirs, files in os.walk(directory):
 #     fileslist = []
