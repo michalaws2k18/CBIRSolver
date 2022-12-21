@@ -64,6 +64,7 @@ def get():
     logger.info(RESULT_IMAGE_PATH)
     return send_file(RESULT_IMAGE_PATH)
 
+
 @app.route('/getResultsData', methods=['GET'])
 def getResults():
     logger.info('in getting all the results data')
@@ -82,13 +83,16 @@ def post():
         'solver_type': solver_type,
         'input_image_path': SEARCH_IMAGE_PATH
     }
-
-    closest_images, input_image_path = process_searching(search_params=search_params)
-    data = prepareAllData(closest_images, input_image_path)
-    exit_data = {
-        'info': data,
-        'image': 'http://127.0.0.1:5000/getResultsImage',
-    }
+    if solver_type != 0:
+        closest_images, input_image_path = process_searching(
+            search_params=search_params)
+        data = prepareAllData(closest_images, input_image_path)
+        exit_data = {
+            'info': data,
+            'image': 'http://127.0.0.1:5000/getResultsImage',
+        }
+    else:
+        exit_data = process_searching(search_params=search_params)
     return jsonify(exit_data)
 
 
