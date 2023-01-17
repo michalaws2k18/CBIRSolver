@@ -2,10 +2,10 @@ import os
 from scripts.utils.calculate_and_save_hist import (calculatesaveHistogram, calculatesaveHistogram2,
                                                    calculatesaveHistogramGrey)
 from scripts.utils.texture.tamura import saveHistTamuraFeatures
-from config import (N_BINS, SEARCH_DIRECTORY_C, SEARCH_DIRECTORY_C_TAM, SEARCH_DIRECTORY_THIN_HIST_EQUAL,
-                    SEARCH_DIRECTORY_THIN_HIST_EQUAL_GRAY,
-                    SEARCH_DIRECTORY_THIN_HIST_EQUAL_CLAHE,
-                    SEARCH_DIRECTORY_THIN_HIST_EQUAL_CLAHE_GRAY)
+from config import (N_BINS, SEARCH_DIRECTORY_C, SEARCH_DIRECTORY_C_TAM, SEARCH_DIRECTORY_HIST_EQUAL,
+                    SEARCH_DIRECTORY_HIST_EQUAL_GRAY,
+                    SEARCH_DIRECTORY_HIST_EQUAL_CLAHE,
+                    SEARCH_DIRECTORY_HIST_EQUAL_CLAHE_GRAY)
 
 
 def indexImagesInDBHist(directory):
@@ -60,6 +60,6 @@ if __name__ == '__main__':
     # indexImagesInDB(SEARCH_DIRECTORY_C)
     # indexImagesInDBHistTam(SEARCH_DIRECTORY_C_TAM)
     # indexImagesInDBHistEqual(SEARCH_DIRECTORY_THIN_HIST_EQUAL)
-    # indexImagesInDBHistEqualGrey(
-    # SEARCH_DIRECTORY_THIN_HIST_EQUAL_GRAY, 1)
-    indexImagesInDBHistEqual(SEARCH_DIRECTORY_THIN_HIST_EQUAL_CLAHE, 0)
+    indexImagesInDBHistEqualGrey(
+        SEARCH_DIRECTORY_HIST_EQUAL_CLAHE_GRAY, 1)
+    # indexImagesInDBHistEqual(SEARCH_DIRECTORY_HIST_EQUAL, 0)

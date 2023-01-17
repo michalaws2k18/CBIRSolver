@@ -28,7 +28,7 @@ clahe = cv2.createCLAHE()
 img_grey_equal_clahe = clahe.apply(img_grey)
 
 fig, axs = plt.subplots(2, 3)
-fig.subplots_adjust(wspace=0.5)
+fig.subplots_adjust(wspace=0.75)
 axs[0, 0].imshow(img_grey, cmap='gray', vmin=0, vmax=255)
 axs[0, 0].axis("off")
 axs[0, 0].set_title('Obraz czarno-biały')
@@ -49,12 +49,17 @@ axs[1, 2].set_ylim([0, 13000])
 # axs[1, 1].grid()
 # axs[1, 2].grid()
 
-axs[1, 0].hist(img_grey[:, :].flatten(), bins=256, color='green')
+axs[1, 0].hist(img_grey[:, :].flatten(), bins=256, color='black')
 
-axs[1, 1].hist(img_grey_equal[:, :].flatten(), bins=256, color='blue')
+axs[1, 1].hist(img_grey_equal[:, :].flatten(), bins=256, color='black')
 
-axs[1, 2].hist(img_grey_equal_clahe[:, :].flatten(), bins=256, color='red')
-
+axs[1, 2].hist(img_grey_equal_clahe[:, :].flatten(), bins=256, color='black')
+axs[1, 0].set_xlabel("jasność pikseli")
+axs[1, 0].set_ylabel("liczność pikseli")
+axs[1, 1].set_xlabel("jasność pikseli")
+axs[1, 1].set_ylabel("liczność pikseli")
+axs[1, 2].set_xlabel("jasność pikseli")
+axs[1, 2].set_ylabel("liczność pikseli")
 
 # axs[1, 2].hist(sl_bt, bins=256, color='blue')
 # axs[2, 2].hist(sl_bt, bins=number_of_bins, color='blue')
