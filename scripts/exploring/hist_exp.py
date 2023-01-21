@@ -88,8 +88,28 @@ sl_gt = gt[:, :, 1].flatten()
 sl_bt = bt[:, :, 2].flatten()
 
 
+# histogram w skali szarości
+
+fig, axs = plt.subplots(1, 3)
+fig.suptitle('Histogram w skali szarości')
+fig.subplots_adjust(wspace=0.9)
+axs[0].imshow(grey_img, cmap='gray')
+axs[0].axis("off")
+axs[1].hist(grey_img.flatten(), bins=256, color='gray')
+axs[2].hist(grey_img.flatten(), bins=number_of_bins, color='gray')
+axs[1].set_xlabel("jasność pikseli")
+axs[1].set_ylabel("liczność pikseli")
+axs[2].set_xlabel("jasność pikseli")
+axs[2].set_ylabel("liczność pikseli")
+axs[1].set_ylim([0, 13000])
+axs[2].set_ylim([0, 100000])
+axs[1].set_xlim([0, 256])
+axs[2].set_xlim([0, 256])
+
+
+# histogramy skladowych RGB
 fig, axs = plt.subplots(3, 3)
-fig.subplots_adjust(wspace=0.5)
+fig.subplots_adjust(wspace=0.9, hspace=0.55)
 axs[0, 0].imshow(rt)
 axs[0, 0].axis("off")
 # axs[0, 0].set_title('Axis [0, 0]')
@@ -106,6 +126,31 @@ axs[2, 1].hist(sl_gt, bins=number_of_bins, color='green')
 
 axs[1, 2].hist(sl_bt, bins=256, color='blue')
 axs[2, 2].hist(sl_bt, bins=number_of_bins, color='blue')
+
+axs[1, 0].set_ylim([0, 15000])
+axs[1, 1].set_ylim([0, 15000])
+axs[1, 2].set_ylim([0, 15000])
+
+axs[2, 0].set_ylim([0, 120000])
+axs[2, 1].set_ylim([0, 120000])
+axs[2, 2].set_ylim([0, 120000])
+
+axs[1, 0].set_xlim([0, 256])
+axs[1, 1].set_xlim([0, 256])
+axs[1, 2].set_xlim([0, 256])
+
+axs[2, 0].set_xlim([0, 256])
+axs[2, 1].set_xlim([0, 256])
+axs[2, 2].set_xlim([0, 256])
+
+axs[0, 0].set_title('Składowa R')
+axs[0, 1].set_title('Składowa G')
+axs[0, 2].set_title('Składowa B')
+
+for x in [1, 2]:
+    for y in [0, 1, 2]:
+        axs[x, y].set_xlabel("jasność pikseli")
+        axs[x, y].set_ylabel("liczność pikseli")
 
 # axs[0, 1].set_title('Axis [0, 1]')
 # axs[1, 0].imshow(grey_img, cmap=plt.cm.binary)

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from PIL import Image
+from config import EXAMPLE_IMG_PATH
 
 import cv2
 
@@ -62,9 +63,10 @@ def find_max_cliques(arr, n):
 
 def get_ccv(img, n):
     # Blur pixel slightly using avg pooling with 3x3 kernel
+    print(np.shape(img))
     blur_img = cv2.blur(img, (3, 3))
     print(np.shape(blur_img))
-    blur_flat = blur_img.reshape(1000*800, 3)
+    blur_flat = blur_img.reshape(120*80, 3)
 
     # Discretize colors
     hist, edges = np.histogramdd(blur_flat, bins=n)
@@ -94,6 +96,9 @@ def extract_features(image, n):
 if __name__ == "__main__":
     print('xd......')
     filepath = './image_for_text/sloneczniki.jpg'
-    img = np.array(Image.open(filepath))
+    img = cv2.imread(filepath)
+    img2 = cv2.resize(img, [32, 32])
+    img = np.array(Image.open(EXAMPLE_IMG_PATH))
+    print(np.shape(img))
     features = extract_features(img, 2)
     pprint(features)

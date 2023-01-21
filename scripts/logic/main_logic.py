@@ -1,7 +1,7 @@
 import logging
 from scripts.benchmarks.helper import covertPathToLocalPath
 from scripts.logic.one_image import (calcIndicatPrecisRecall, process_hist_solver, process_ml_solver,
-                                     process_tamura_solver, process_hist_tamura_solver,
+                                     process_tamura_solver, process_hist_tamura_solver, processHistSolverGreyNorm,
                                      processSIFTsolver, getTPandFP, processHistSolverEqual, processAllAlgorithms,
                                      processHistSolverEqualGrey)
 from copy import deepcopy
@@ -29,12 +29,31 @@ def process_searching(search_params):
             n_of_res=n_of_res,
             input_image_path=input_image_path)
         logger.info(closest_images)
-    elif solver_type == 2:
+    elif solver_type in [23, 63]:
         # Classic logic used here only histogram
-        logger.info('Wybrano solver klasyczny-histogram')
-        closest_images = process_hist_solver(
-            n_of_res=n_of_res,
-            input_image_path=input_image_path)
+        logger.info('Wybrano solver klasyczny-histogram znroamlizowany lub nie')
+        if solver_type == 63:
+            closest_images = process_hist_solver(
+                n_of_res=n_of_res,
+                input_image_path=input_image_path, norm=1)
+        else:
+            closest_images = process_hist_solver(
+                n_of_res=n_of_res,
+                input_image_path=input_image_path, norm=0)
+        logger.info(closest_images)
+    elif solver_type in [21, 61]:
+        # 21- histogram gray scale
+        # 61 - historgram gray scale norm
+        logger.info(
+            'Wybrano solver histogram w skali szarości znormalizowany lub nie')
+        if solver_type == 61:
+            closest_images = processHistSolverGreyNorm(
+                n_of_res=n_of_res,
+                input_image_path=input_image_path, norm=1)
+        else:
+            closest_images = processHistSolverGreyNorm(
+                n_of_res=n_of_res,
+                input_image_path=input_image_path, norm=0)
         logger.info(closest_images)
     elif solver_type in [211, 212]:
         # histogram gray scale equalized

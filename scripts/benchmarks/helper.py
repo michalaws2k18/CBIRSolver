@@ -2,6 +2,7 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 from scripts.metrics_quality.metrics_calculation import calculateDistance
+import random
 
 
 def convertNpyPathsToJpeg(closest_img_paths_npy):
@@ -162,3 +163,18 @@ def covertPathToLocalPath(image_primary_path):
     head2, tail2 = os.path.split(head)
     res_path = os.path.join('http://127.0.0.1:5000/images_db/', tail2, tail)
     return res_path
+
+
+def selectRandomInputImages(numberofinputsinoneclass, search_dir):
+    inputimages = []
+    for subdir, dirs, files in os.walk(search_dir):
+        allimagesinclass = []
+        for file in files:
+            filepath = subdir + os.sep + file
+            if filepath.endswith(".jpg"):
+                allimagesinclass.append(filepath)
+        if len(allimagesinclass) > numberofinputsinoneclass:
+            selectedimages = random.sample(
+                allimagesinclass, numberofinputsinoneclass)
+            inputimages.append(selectedimages)
+    return inputimages

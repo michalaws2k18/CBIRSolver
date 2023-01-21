@@ -12,33 +12,41 @@ def calculateHistogram(number_of_bins, image, conversion=cv2.COLOR_BGR2HSV):
     return histdata
 
 
-def calculatesaveHistogram(number_of_bins, image):
-    img = cv2.imread(image)
+def calculateSaveHistogram(number_of_bins, image_path, normalize=0):
+    img = cv2.imread(image_path)
+    if normalize:
+        img = normalizeHistogram(img)
     histdata = calculateHistogram(number_of_bins, img)
     # print(histdata)
-    saveas = image[:image.rfind(".jpg")] + ".npy"
+    saveas = image_path[:image_path.rfind(".jpg")] + ".npy"
     np.save(saveas, histdata)
 
 
 def calculatesaveHistogram2(number_of_bins, image_path, equal_alg):
     img = runHistEqual(image_path, equal_alg)
+    # poaje konwesje bo defaukltowo jest w przestrzeni HSV
     histdata = calculateHistogram(number_of_bins, img, cv2.COLOR_BGR2RGB)
     # print(histdata)
     saveas = image_path[:image_path.rfind(".jpg")] + ".npy"
     np.save(saveas, histdata)
 
 
-def calculatesaveHistogramGrey(number_of_bins, image_path, equal_alg):
+def calculateSaveHistogramGrey(number_of_bins, image_path, equal_alg=0, normalize=0):
     img_grey = cv2.imread(image_path, 0)
-    img_grey_equal = equalizeHistGray(img_grey, equal_alg)
-    img_hist = cv2.calcHist([img_grey_equal], [0], None, [
+    if normalize:
+        img_grey = normalizeHistogram(img_grey)
+    if equal_alg:
+        img_grey = equalizeHistGray(img_grey, equal_alg)
+
+    img_hist = cv2.calcHist([img_grey], [0], None, [
                             number_of_bins], [0, 256])
     saveas = image_path[:image_path.rfind(".jpg")] + ".npy"
     np.save(saveas, img_hist)
 
 
-def normaliseHistogram(canal_hist, ):
-    cv2.normalize(canal_hist, canal_hist, alpha=0, norm_type=cv2.NORM_MINMAX)
+def normalizeHistogram(img_input):
+    img_normalized = cv2.normalize(img_input, 1, None, 255, cv2.NORM_MINMAX)
+    return img_normalized
 
 
 def runHistEqual(image_path, equal_alg):

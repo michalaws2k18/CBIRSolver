@@ -1,6 +1,6 @@
 import os
 import math
-from utils.calculate_and_save_hist import calculatesaveHistogram, calculateHistogram
+from utils.calculate_and_save_hist import calculateSaveHistogram, calculateHistogram
 from metrics_quality.metrics_calculation import calculateDistanceEukliedian, calculateDistanceMaksimum, calculateDistanceManhattan, calculateDistanceMinkowski
 from metrics_quality.quality_indicators import getTP, getPrecisionAndAccuracyData
 import cv2
@@ -20,7 +20,7 @@ def indexImagesInDirectory(numberofbins):
         for file in files:
             filepath = subdir + os.sep + file
             if filepath.endswith(".jpg"):
-                calculatesaveHistogram(numberofbins, filepath)
+                calculateSaveHistogram(numberofbins, filepath)
 
 
 def getTheClosestImages(numberofresults, inputimagehistogram):
