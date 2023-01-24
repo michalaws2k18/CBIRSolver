@@ -8,8 +8,10 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from scripts.logic.main_logic import prepareAllData, process_searching
 from copy import deepcopy
-from config import RESULT_IMAGE_PATH
+from config import EXAMPLE_IMG_PATH, INPUT_IMAGE_HIST, RESULT_IMAGE_PATH
 from markupsafe import escape
+
+from scripts.utils.basic_to_all import createLoadingImage, getInputImageValues
 
 
 # Variables to be defined and changed soon
@@ -55,6 +57,7 @@ def postImage():
     file.save(destination)
     global SEARCH_IMAGE_PATH
     SEARCH_IMAGE_PATH = deepcopy(destination)
+    createLoadingImage(INPUT_IMAGE_HIST, SEARCH_IMAGE_PATH)
     response = jsonify({'message': 'File sucessfully saved on server'})
     return response
 
@@ -63,6 +66,21 @@ def postImage():
 def get():
     logger.info(RESULT_IMAGE_PATH)
     return send_file(RESULT_IMAGE_PATH)
+
+
+@app.route('/getInputImageHist', methods=['GET'])
+def getInput():
+    logger.info(INPUT_IMAGE_HIST)
+    return send_file(INPUT_IMAGE_HIST)
+
+
+@app.route('/getInputImageValues', methods=['GET'])
+def getInputValues():
+    logger.info("calculating params for input image")
+    exit_data = getInputImageValues(EXAMPLE_IMG_PATH)
+    response = jsonify(exit_data)
+    logger.info(response)
+    return response
 
 
 @app.route('/getResultsData', methods=['GET'])

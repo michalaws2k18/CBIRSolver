@@ -2,7 +2,8 @@
 from scripts.metrics_quality.quality_indicators import getPrecisionAndAccuracy
 from scripts.utils.texture.tamura import getTamuraFeatures
 from scripts.logic.ml_model import extractFeatures
-from scripts.metrics_quality.metrics_calculation import distanceManhattan, distanceEukliedian, distanceChi2
+from scripts.metrics_quality.metrics_calculation import (distanceManhattan, distanceEukliedian, distanceChi2,
+                                                         distanceManhattanNorm)
 from scripts.metrics_quality.quality_indicators import getTP
 from scripts.benchmarks.helper import (getTheClosestImages, createResultImage,
                                        replaceStrInListFromRight, getTheClosestImagesCoef)
@@ -14,8 +15,10 @@ from config import (N_BINS, SEARCH_DIRECTORY_C, RESULT_IMAGE_PATH, SEARCH_DIRECT
                     SEARCH_DIRECTORY_HIST_EQUAL_CLAHE_GRAY,
                     SEARCH_DIRECTORY_HIST_GRAY,
                     SEARCH_DIRECTORY_HIST_GRAY_NORM,
-                    SEARCH_DIRECTORY_HIST_NORM)
+                    SEARCH_DIRECTORY_HIST_NORM,
+                    SEARCH_DIR_CCV, CCV_N)
 from scripts.utils.sift import obtainBOWVector
+from scripts.utils.ccv import extract_CCV
 import cv2
 import numpy as np
 import os
@@ -88,6 +91,14 @@ def process_ml_solver(n_of_res, input_image_path):
     return closest_images
 
 
+def processCCVOnlySolver(n_of_res, input_image_path):
+    ccv_features = extract_CCV(input_image_path, CCV_N)
+    closest_images = getTheClosestImages(
+        n_of_res, ccv_features, SEARCH_DIR_CCV, distanceManhattanNorm)
+    createResultImage(closest_images, RESULT_IMAGE_PATH, n_of_res)
+    return closest_images
+
+
 def process_tamura_solver(n_of_res, input_image_path):
     img_features = getTamuraFeatures(input_image_path)
     separator = [3*N_BINS, 3*N_BINS+3]
@@ -138,6 +149,9 @@ def processAllAlgorithms(n_of_res, input_image_path):
         n_of_res, input_image_path, 211)
     res_hist_grey_equal_clahe = processHistSolverEqualGrey(
         n_of_res, input_image_path, 212)
+    res_ccv_only = processCCVOnlySolver(
+        n_of_res, input_image_path)
+
     precison1, recall1 = calcIndicatPrecisRecall(input_image_path, res_hist)
     TP1, FP1 = getTPandFP(input_image_path, res_hist)
 
@@ -171,6 +185,10 @@ def processAllAlgorithms(n_of_res, input_image_path):
     precison9, recall9 = calcIndicatPrecisRecall(
         input_image_path, res_hist_gray_norm)
     TP9, FP9 = getTPandFP(input_image_path, res_hist_gray_norm)
+
+    precison10, recall10 = calcIndicatPrecisRecall(
+        input_image_path, res_ccv_only)
+    TP10, FP10 = getTPandFP(input_image_path, res_ccv_only)
 
     result = {
         "InceptionResNetV2": {
@@ -227,6 +245,12 @@ def processAllAlgorithms(n_of_res, input_image_path):
             "recall": recall4,
             "TP": TP4,
             "FP": FP4, },
+        "CCV": {
+            "closest_images": res_ccv_only,
+            "precison": precison10,
+            "recall": recall10,
+            "TP": TP10,
+            "FP": FP10, },
     }
     return result
 

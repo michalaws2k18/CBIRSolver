@@ -32,6 +32,7 @@ def distanceMinkowski(X, Y, p=2):
     value = pow(value, 1/p)
     return value
 
+
 def distanceChi2(X, Y):
     for elem in list(zip(X, Y)):
         to_sum = []
@@ -42,6 +43,16 @@ def distanceChi2(X, Y):
             to_sum.append(part)
     chi = 0.5 * np.sum(to_sum)
     return chi
+
+
+def distanceManhattanNorm(X, Y):
+    result = np.subtract(X, Y)
+    mian = np.add(X, Y)
+    mian = mian + 1
+    result = np.absolute(result)
+    norm_vec = np.divide(result, mian)
+    value = norm_vec.sum()
+    return value
 
 
 def calculateDistanceManhattan(filepath, inputimagedata):

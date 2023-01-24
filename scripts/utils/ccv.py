@@ -1,11 +1,6 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
 from PIL import Image
-from config import EXAMPLE_IMG_PATH
-
 import cv2
-
 from pprint import pprint
 
 
@@ -93,12 +88,13 @@ def extract_features(image, n):
     return get_ccv(image, n)
 
 
-if __name__ == "__main__":
-    print('xd......')
-    filepath = './image_for_text/sloneczniki.jpg'
-    img = cv2.imread(filepath)
-    img2 = cv2.resize(img, [32, 32])
-    img = np.array(Image.open(EXAMPLE_IMG_PATH))
-    print(np.shape(img))
-    features = extract_features(img, 3)
-    pprint(features)
+def extract_CCV(image_path, n):
+    img = np.array(Image.open(image_path))
+    ccv_feature = get_ccv(img, n)
+    return ccv_feature
+
+
+def extractAndSaveCCV(image_path, n):
+    ccv_features = extract_CCV(image_path, n)
+    saveas = image_path[:image_path.rfind(".jpg")] + ".npy"
+    np.save(saveas, ccv_features)

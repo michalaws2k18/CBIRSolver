@@ -1,5 +1,6 @@
 N_BINS = 32
-EXAMPLE_IMG_PATH = r'D:\Dokumenty\CBIR\CorelDB\pl_flower\84012.jpg'
+CCV_N = 3
+EXAMPLE_IMG_PATH = r'D:\Dokumenty\CBIR\CorelDBCleanInput\pl_flower\84012.jpg'
 RESULT_IMAGE_PATH = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_result\result_img.png'  # noqa
 SEARCH_DIRECTORY_ML = r'D:\Dokumenty\CBIR\CorelDBML'
 SEARCH_DIRECTORY_C = r'D:\Dokumenty\CBIR\CorelDBHist'
@@ -17,3 +18,5 @@ LOCAL_IMAGE_STORE = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\images_db'
 SEARCH_DIRECTORY_HIST_GRAY = r'D:\Dokumenty\CBIR\CorelDBHistGray'
 SEARCH_DIRECTORY_HIST_NORM = r'D:\Dokumenty\CBIR\CorelDBHistNorm'
 SEARCH_DIRECTORY_HIST_GRAY_NORM = r'D:\Dokumenty\CBIR\CorelDBHistGrayNorm'
+SEARCH_DIR_CCV = r'D:\Dokumenty\CBIR\CorelDBCCV'
+INPUT_IMAGE_HIST = r'D:\Dokumenty\CBIR\repo_scripts\CBIRSolver\test_result\input_img_hist.png'

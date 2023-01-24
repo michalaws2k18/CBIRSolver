@@ -3,7 +3,7 @@ from scripts.benchmarks.helper import covertPathToLocalPath
 from scripts.logic.one_image import (calcIndicatPrecisRecall, process_hist_solver, process_ml_solver,
                                      process_tamura_solver, process_hist_tamura_solver, processHistSolverGreyNorm,
                                      processSIFTsolver, getTPandFP, processHistSolverEqual, processAllAlgorithms,
-                                     processHistSolverEqualGrey)
+                                     processHistSolverEqualGrey, processCCVOnlySolver)
 from copy import deepcopy
 
 logging.basicConfig(level=logging.INFO)
@@ -90,6 +90,13 @@ def process_searching(search_params):
         # Classic histogram and Tamura features
         logger.info('Wybrano solver w oparciu o deskryptor SIFT')
         closest_images = processSIFTsolver(
+            n_of_res=n_of_res,
+            input_image_path=input_image_path)
+        logger.info(closest_images)
+    elif solver_type == 7:
+        # Classic histogram and Tamura features
+        logger.info('Wybrano solver w oparciu o deskryptor SIFT')
+        closest_images = processCCVOnlySolver(
             n_of_res=n_of_res,
             input_image_path=input_image_path)
         logger.info(closest_images)

@@ -1,13 +1,14 @@
 import os
 from scripts.utils.calculate_and_save_hist import (calculateSaveHistogram, calculatesaveHistogram2,
                                                    calculateSaveHistogramGrey)
+from scripts.utils.ccv import extractAndSaveCCV
 from scripts.utils.texture.tamura import saveHistTamuraFeatures
 from config import (N_BINS, SEARCH_DIRECTORY_C, SEARCH_DIRECTORY_C_TAM, SEARCH_DIRECTORY_HIST_EQUAL,
                     SEARCH_DIRECTORY_HIST_EQUAL_GRAY,
                     SEARCH_DIRECTORY_HIST_EQUAL_CLAHE,
                     SEARCH_DIRECTORY_HIST_EQUAL_CLAHE_GRAY,
                     SEARCH_DIRECTORY_HIST_GRAY, SEARCH_DIRECTORY_HIST_GRAY_NORM,
-                    SEARCH_DIRECTORY_HIST_NORM)
+                    SEARCH_DIRECTORY_HIST_NORM, SEARCH_DIR_CCV, CCV_N)
 
 
 def indexImagesInDBHist(directory, norm=0):
@@ -59,6 +60,14 @@ def indexImagesInDBHistEqualGrey(directory, alg, norm=0):
                     N_BINS, filepath, alg, normalize=norm)
 
 
+def indexImagesInDBCCV(directory, ccv_n=CCV_N):
+    for subdir, dirs, files in os.walk(directory):
+        for file in files:
+            filepath = subdir + os.sep + file
+            if filepath.endswith(".jpg"):
+                extractAndSaveCCV(filepath, ccv_n)
+
+
 if __name__ == '__main__':
     # indexImagesInDB(SEARCH_DIRECTORY_C)
     # indexImagesInDBHistTam(SEARCH_DIRECTORY_C_TAM)
@@ -68,4 +77,5 @@ if __name__ == '__main__':
     # indexImagesInDBHistEqual(SEARCH_DIRECTORY_HIST_EQUAL, 0)
     # indexImagesInDBHistEqualGrey(
     #     SEARCH_DIRECTORY_HIST_GRAY_NORM, alg=0, norm=1)
-    indexImagesInDBHist(SEARCH_DIRECTORY_HIST_NORM, norm=1)
+    # indexImagesInDBHist(SEARCH_DIRECTORY_HIST_NORM, norm=1)
+    indexImagesInDBCCV(SEARCH_DIR_CCV)
