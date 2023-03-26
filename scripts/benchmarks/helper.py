@@ -38,6 +38,21 @@ def getTheClosestImages(
     return theclosestimages
 
 
+def getImagesInDistanceOrder(
+        inputimagehistogram,
+        search_dir,
+        distMetric,
+        separator=None):
+    distancelist = getListOfDistances(
+        inputimagehistogram, search_dir, distMetric, separator)
+    distancelist_sorted = sorted(distancelist, key=lambda tup: tup[0])
+    theclosestimages_npy = distancelist_sorted
+    theclosestimages_npy_norm = normalizeDistanceList(
+        theclosestimages_npy, distancelist_sorted[-1][0])
+    theclosestimages = convertNpyPathsToJpeg(theclosestimages_npy_norm)
+    return theclosestimages
+
+
 def getListOfDistances(input_img_hist, search_dir, dist_metric, separator=None):
     distancelist = []
     for subdir, dirs, files in os.walk(search_dir):
@@ -49,6 +64,41 @@ def getListOfDistances(input_img_hist, search_dir, dist_metric, separator=None):
                         filepath, input_img_hist, dist_metric, separator)
                     distancelist.append((distance, filepath))
     return distancelist
+
+
+def joinTwoDistanceLists(list_one, list_two):
+    result_list = []
+    for tuple in list_one:
+        dist2 = getDistfromSecondList(list_two, tuple[1])
+        result_list.append((tuple[0]+dist2, tuple[1]))
+    return result_list
+
+
+def matchOnlyLastTwoParts(path_one, path_two):
+    last_one = os.path.split(path_one)[1]
+    last_two = os.path.split(path_two)[1]
+    return last_one == last_two
+
+
+def getDistfromSecondList(op_list, match_filepath):
+    index = next(i for i, v in enumerate(op_list)
+                 if matchOnlyLastTwoParts(match_filepath, v[1]))
+    return op_list[index][0]
+
+
+def isSamePath(match_filepath, v):
+    if match_filepath in v:
+        return True
+    else:
+        return False
+
+
+def convertPathsInList(original_list):
+    result = []
+    for item in original_list:
+        new_path = covertPathToLocalPath(item[1])
+        result.append((item[0], new_path))
+    return result
 
 
 def createResultImage(closest_images_path, save_img_path, n_of_res, add_hist=False):

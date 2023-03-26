@@ -23,9 +23,25 @@ def getRecall(resultslist, classpath):
     return accuracy
 
 
+def getRecall2(resultslist, classpath):
+    classpath = classpath.lstrip('http://127.0.0.1:5000')
+    classpath = 'D:/Dokumenty/CBIR/CorelDBCleanInput'+classpath
+    print(classpath)
+    numberofgoodcalassresults = getTP(resultslist, classpath)
+    totalnumberofgoodimgindb = len(glob.glob1(classpath, "*.jpg"))
+    accuracy = numberofgoodcalassresults/totalnumberofgoodimgindb
+    return accuracy
+
+
 def getPrecisionAndAccuracy(resultslist, classpath):
     precison = getPrecision(resultslist, classpath)
     recall = getRecall(resultslist, classpath)
+    return precison, recall
+
+
+def getPrecisionAndAccuracy2(resultslist, classpath):
+    precison = getPrecision(resultslist, classpath)
+    recall = getRecall2(resultslist, classpath)
     return precison, recall
 
 

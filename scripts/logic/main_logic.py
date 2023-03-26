@@ -1,7 +1,7 @@
 import logging
 from scripts.benchmarks.helper import covertPathToLocalPath
 from scripts.logic.one_image import (calcIndicatPrecisRecall, process_hist_solver, process_ml_solver,
-                                     process_tamura_solver, process_hist_tamura_solver, processHistSolverGreyNorm,
+                                     process_tamura_solver, process_hist_tamura_solver, processCCVAndHist, processHistSolverGreyNorm,
                                      processSIFTsolver, getTPandFP, processHistSolverEqual, processAllAlgorithms,
                                      processHistSolverEqualGrey, processCCVOnlySolver)
 from copy import deepcopy
@@ -94,11 +94,18 @@ def process_searching(search_params):
             input_image_path=input_image_path)
         logger.info(closest_images)
     elif solver_type == 7:
-        # Classic histogram and Tamura features
-        logger.info('Wybrano solver w oparciu o deskryptor SIFT')
+        # Color coherence vector
+        logger.info('Wybrano solver w opraciu o wektor spójności koloru')
         closest_images = processCCVOnlySolver(
             n_of_res=n_of_res,
             input_image_path=input_image_path)
+        logger.info(closest_images)
+    elif solver_type == 71:
+        # Color coherence vector
+        logger.info(
+            'Wybrano solver w opraciu o wektor spójności koloru CCV oraz histogram HSV')
+        closest_images = processCCVAndHist(n_of_res, input_image_path,
+                                           ccv_first=True, first_pool_multi=10)
         logger.info(closest_images)
     else:
         logger.info('Podany typ solvera nie istnieje')

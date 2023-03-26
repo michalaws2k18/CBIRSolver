@@ -1,12 +1,12 @@
 
-from scripts.metrics_quality.quality_indicators import getPrecisionAndAccuracy
+from scripts.metrics_quality.quality_indicators import getPrecisionAndAccuracy, getPrecisionAndAccuracy2
 from scripts.utils.texture.tamura import getTamuraFeatures
 from scripts.logic.ml_model import extractFeatures
 from scripts.metrics_quality.metrics_calculation import (distanceManhattan, distanceEukliedian, distanceChi2,
                                                          distanceManhattanNorm)
 from scripts.metrics_quality.quality_indicators import getTP
-from scripts.benchmarks.helper import (getTheClosestImages, createResultImage,
-                                       replaceStrInListFromRight, getTheClosestImagesCoef)
+from scripts.benchmarks.helper import (getTheClosestImages, createResultImage, joinTwoDistanceLists,
+                                       replaceStrInListFromRight, getTheClosestImagesCoef, getImagesInDistanceOrder)
 from scripts.utils.calculate_and_save_hist import calculateHistogram, normalizeHistogram, runHistEqual, equalizeHistGray
 from config import (N_BINS, SEARCH_DIRECTORY_C, RESULT_IMAGE_PATH, SEARCH_DIRECTORY_C_TAM, SEARCH_DIRECTORY_ML,
                     SEARCH_DIRECTORY_THIN_SIFT, SEARCH_DIRECTORY_HIST_EQUAL,
@@ -99,6 +99,31 @@ def processCCVOnlySolver(n_of_res, input_image_path):
     return closest_images
 
 
+def processCCVAndHist(n_of_res, input_image_path, ccv_first=True, first_pool_multi=10):
+    ccv_features = extract_CCV(input_image_path, CCV_N)
+    img = cv2.imread(input_image_path)
+    img_hist = calculateHistogram(N_BINS, img)
+    print('in fun')
+    search_dir_list = [SEARCH_DIR_CCV, SEARCH_DIRECTORY_C]
+    features_list = [ccv_features, img_hist]
+    if not ccv_first:
+        search_dir_list.reverse()
+        features_list.reverse()
+    closest_images_0 = getImagesInDistanceOrder(
+        features_list[0], search_dir_list[0], distanceManhattanNorm)
+    closest_images_1 = getImagesInDistanceOrder(
+        features_list[1], search_dir_list[1], distanceManhattanNorm)
+
+    closest_images = joinTwoDistanceLists(closest_images_0, closest_images_1)
+    res_closest_images = closest_images[:n_of_res]
+
+    return res_closest_images
+    # closest_images_2 = getTheClosestImages(
+    #     n_of_res, features_list[1], search_dir_list[1], distanceManhattanNorm)
+    # createResultImage(closest_images_final, RESULT_IMAGE_PATH, n_of_res)
+    # return closest_images_final
+
+
 def process_tamura_solver(n_of_res, input_image_path):
     img_features = getTamuraFeatures(input_image_path)
     separator = [3*N_BINS, 3*N_BINS+3]
@@ -151,6 +176,8 @@ def processAllAlgorithms(n_of_res, input_image_path):
         n_of_res, input_image_path, 212)
     res_ccv_only = processCCVOnlySolver(
         n_of_res, input_image_path)
+    res_ccv_hist = processCCVAndHist(n_of_res, input_image_path,
+                                     ccv_first=True, first_pool_multi=10)
 
     precison1, recall1 = calcIndicatPrecisRecall(input_image_path, res_hist)
     TP1, FP1 = getTPandFP(input_image_path, res_hist)
@@ -189,6 +216,10 @@ def processAllAlgorithms(n_of_res, input_image_path):
     precison10, recall10 = calcIndicatPrecisRecall(
         input_image_path, res_ccv_only)
     TP10, FP10 = getTPandFP(input_image_path, res_ccv_only)
+
+    precison11, recall11 = calcIndicatPrecisRecall(
+        input_image_path, res_ccv_hist)
+    TP11, FP11 = getTPandFP(input_image_path, res_ccv_only)
 
     result = {
         "InceptionResNetV2": {
@@ -251,6 +282,12 @@ def processAllAlgorithms(n_of_res, input_image_path):
             "recall": recall10,
             "TP": TP10,
             "FP": FP10, },
+        "CCV_hist": {
+            "closest_images": res_ccv_hist,
+            "precison": precison11,
+            "recall": recall11,
+            "TP": TP11,
+            "FP": FP11, },
     }
     return result
 
@@ -264,6 +301,7 @@ def calcIndicatPrecisRecall(input_image_path, closest_images):
     print(precision)
     print(recall)
     return precision, recall
+
 
 # Needs some upgrade but now should work
 
