@@ -18,6 +18,7 @@ def process_searching(search_params):
     n_of_res = search_params['n_of_res']
     input_image_path = search_params['input_image_path']
     closest_images = []
+    search_time = 0
     if solver_type == 0:
         # test all solver algorithms
         res_response = processAllAlgorithms(n_of_res, input_image_path)
@@ -25,7 +26,7 @@ def process_searching(search_params):
     elif solver_type == 1:
         # ML solver used here
         logger.info('Wybrano solver ML')
-        closest_images = process_ml_solver(
+        closest_images, search_time_ml = process_ml_solver(
             n_of_res=n_of_res,
             input_image_path=input_image_path)
         logger.info(closest_images)
@@ -33,11 +34,11 @@ def process_searching(search_params):
         # Classic logic used here only histogram
         logger.info('Wybrano solver klasyczny-histogram znroamlizowany lub nie')
         if solver_type == 63:
-            closest_images = process_hist_solver(
+            closest_images, search_time = process_hist_solver(
                 n_of_res=n_of_res,
                 input_image_path=input_image_path, norm=1)
         else:
-            closest_images = process_hist_solver(
+            closest_images, search_time = process_hist_solver(
                 n_of_res=n_of_res,
                 input_image_path=input_image_path, norm=0)
         logger.info(closest_images)
@@ -47,11 +48,11 @@ def process_searching(search_params):
         logger.info(
             'Wybrano solver histogram w skali szarości znormalizowany lub nie')
         if solver_type == 61:
-            closest_images = processHistSolverGreyNorm(
+            closest_images, search_time = processHistSolverGreyNorm(
                 n_of_res=n_of_res,
                 input_image_path=input_image_path, norm=1)
         else:
-            closest_images = processHistSolverGreyNorm(
+            closest_images, search_time = processHistSolverGreyNorm(
                 n_of_res=n_of_res,
                 input_image_path=input_image_path, norm=0)
         logger.info(closest_images)
@@ -59,7 +60,7 @@ def process_searching(search_params):
         # histogram gray scale equalized
         logger.info(
             'Wybrano solver histogram w skali szarości zrównoważony')
-        closest_images = processHistSolverEqualGrey(
+        closest_images, search_time = processHistSolverEqualGrey(
             n_of_res=n_of_res,
             input_image_path=input_image_path,
             algorithm_code=int(solver_type))
@@ -67,7 +68,7 @@ def process_searching(search_params):
     elif solver_type in [231, 232]:
         # histogram RGB equlaized
         logger.info('Wybrano solver histogram RGB zrównoważony')
-        closest_images = processHistSolverEqual(
+        closest_images, search_time = processHistSolverEqual(
             n_of_res=n_of_res,
             input_image_path=input_image_path,
             algoritm_code=int(solver_type))
@@ -96,7 +97,7 @@ def process_searching(search_params):
     elif solver_type == 7:
         # Color coherence vector
         logger.info('Wybrano solver w opraciu o wektor spójności koloru')
-        closest_images = processCCVOnlySolver(
+        closest_images, search_time = processCCVOnlySolver(
             n_of_res=n_of_res,
             input_image_path=input_image_path)
         logger.info(closest_images)
@@ -104,18 +105,18 @@ def process_searching(search_params):
         # Color coherence vector
         logger.info(
             'Wybrano solver w opraciu o wektor spójności koloru CCV oraz histogram HSV')
-        closest_images = processCCVAndHist(n_of_res, input_image_path,
-                                           ccv_first=True, first_pool_multi=10)
+        closest_images, search_time = processCCVAndHist(n_of_res, input_image_path,
+                                                        ccv_first=True)
         logger.info(closest_images)
     else:
         logger.info('Podany typ solvera nie istnieje')
     if solver_type != 0:
-        return closest_images, input_image_path
+        return closest_images, input_image_path, search_time
     else:
         return res_response
 
 
-def prepareAllData(closest_images, input_image_path):
+def prepareAllData(closest_images, input_image_path, search_time):
     closest_images_local = []
     nofres = len(closest_images)
     precision, recall = calcIndicatPrecisRecall(
@@ -135,6 +136,7 @@ def prepareAllData(closest_images, input_image_path):
         "TP": TP,
         "FP": FP,
         "nofres": nofres,
-        "closest_images_paths": closest_images_local
+        "closest_images_paths": closest_images_local,
+        "search_time": search_time,
     }
     return data

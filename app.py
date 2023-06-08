@@ -77,7 +77,7 @@ def getInput():
 @app.route('/getInputImageValues', methods=['GET'])
 def getInputValues():
     logger.info("calculating params for input image")
-    exit_data = getInputImageValues(EXAMPLE_IMG_PATH)
+    exit_data = getInputImageValues(SEARCH_IMAGE_PATH)
     response = jsonify(exit_data)
     logger.info(response)
     return response
@@ -102,9 +102,9 @@ def post():
         'input_image_path': SEARCH_IMAGE_PATH
     }
     if solver_type != 0:
-        closest_images, input_image_path = process_searching(
+        closest_images, input_image_path, search_time = process_searching(
             search_params=search_params)
-        data = prepareAllData(closest_images, input_image_path)
+        data = prepareAllData(closest_images, input_image_path, search_time)
         exit_data = {
             'info': data,
             'image': 'http://127.0.0.1:5000/getResultsImage',

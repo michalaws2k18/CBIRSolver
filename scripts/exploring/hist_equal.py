@@ -19,7 +19,7 @@ equalized_img = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2BGR)
 # cv2.waitKey(0)
 
 img_grey = cv2.imread('./image_for_text/sloneczniki.jpg', 0)
-print(img_grey)
+# print(img_grey)
 img_grey_equal = cv2.equalizeHist(img_grey)
 
 

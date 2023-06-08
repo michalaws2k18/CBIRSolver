@@ -58,9 +58,9 @@ def find_max_cliques(arr, n):
 
 def get_ccv(img, n):
     # Blur pixel slightly using avg pooling with 3x3 kernel
-    print(np.shape(img))
+    # print(np.shape(img))
     blur_img = cv2.blur(img, (3, 3))
-    print(np.shape(blur_img))
+    # print(np.shape(blur_img))
     blur_flat = blur_img.reshape(120*80, 3)
 
     # Discretize colors

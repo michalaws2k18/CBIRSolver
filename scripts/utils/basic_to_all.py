@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import os
 
 from scripts.utils.texture.gabor import GaborFilter
 from scripts.utils.texture.tamura import get_coarseness, get_contrast, get_directionality
@@ -82,6 +83,9 @@ def createLoadingImage(save_path, input_image_path):
     ax[1].hist(img[:, :, 2].flatten(), bins=256, color='red')
     ax[1].hist(img[:, :, 1].flatten(), bins=256, color='green')
     ax[1].hist(img[:, :, 0].flatten(), bins=256, color='blue')
+
+    if os.path.isfile(save_path):
+        os.remove(save_path)   # Opt.: os.system("rm "+strFile)
 
     plt.savefig(save_path)
 

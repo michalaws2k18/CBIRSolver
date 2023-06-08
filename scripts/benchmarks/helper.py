@@ -2,7 +2,9 @@ import os
 import cv2
 import matplotlib.pyplot as plt
 from scripts.metrics_quality.metrics_calculation import calculateDistance
+from config import STANDALONE
 import random
+from copy import deepcopy
 
 
 def convertNpyPathsToJpeg(closest_img_paths_npy):
@@ -32,6 +34,22 @@ def getTheClosestImages(
         inputimagehistogram, search_dir, distMetric, separator)
     distancelist_sorted = sorted(distancelist, key=lambda tup: tup[0])
     theclosestimages_npy = distancelist_sorted[:numberofresults]
+    theclosestimages_npy_norm = normalizeDistanceList(
+        theclosestimages_npy, distancelist_sorted[-1][0])
+    theclosestimages = convertNpyPathsToJpeg(theclosestimages_npy_norm)
+    return theclosestimages
+
+
+def getTheClosestImages2(
+        numberofresults,
+        inputimagehistogram,
+        search_dir,
+        distMetric,
+        separator=None):
+    distancelist = getListOfDistances(
+        inputimagehistogram, search_dir, distMetric, separator)
+    distancelist_sorted = sorted(distancelist, key=lambda tup: tup[0])
+    theclosestimages_npy = deepcopy(distancelist_sorted)
     theclosestimages_npy_norm = normalizeDistanceList(
         theclosestimages_npy, distancelist_sorted[-1][0])
     theclosestimages = convertNpyPathsToJpeg(theclosestimages_npy_norm)
@@ -228,3 +246,29 @@ def selectRandomInputImages(numberofinputsinoneclass, search_dir):
                 allimagesinclass, numberofinputsinoneclass)
             inputimages.append(selectedimages)
     return inputimages
+
+
+def findAlreadyExtractedFeatures(input_image_path, search_dir):
+    if STANDALONE:
+        subpath = os.path.normpath(input_image_path)
+        head, tail = os.path.split(subpath)
+        head2, tail2 = os.path.split(head)
+        res_path = os.path.join(search_dir, tail2, tail)
+        res_path = res_path[:res_path.rfind(".jpg")] + ".npy"
+        return res_path
+    else:
+        image_name = os.path.basename(os.path.normpath(input_image_path))
+        found_path = False
+        for subdir, dirs, files in os.walk(search_dir):
+            for file in files:
+                filepath = subdir + os.sep + file
+                if filepath.endswith(".npy"):
+                    if image_name in filepath:
+                        found_path = filepath
+                        break
+
+        return found_path
+
+
+def convertSearchPathToLocalDir(input_image_path, search_dir):
+    pass
