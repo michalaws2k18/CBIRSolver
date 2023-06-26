@@ -39,11 +39,11 @@ histdata = np.column_stack((histB, histG, histR))
 
 directory = 'D:\Dokumenty\CBIR\CorelDB'
 
-for subdir, dirs, files in os.walk(directory):
-    # print(dirs)
-    # for file in files:
-    #     #print os.path.join(subdir, file)
-    #     filepath = subdir + os.sep + file
+# for subdir, dirs, files in os.walk(directory):
+#     # print(dirs)
+#     # for file in files:
+#     #     #print os.path.join(subdir, file)
+#     #     filepath = subdir + os.sep + file
 
-    #     if filepath.endswith(".jpg"):
-    #         print(filepath)
+#     #     if filepath.endswith(".jpg"):
+#     #         print(filepath)
