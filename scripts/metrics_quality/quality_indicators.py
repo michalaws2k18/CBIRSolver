@@ -1,5 +1,6 @@
 import glob
 import os
+from config import SEARCH_DIRECTORY_INPUT
 
 
 def getTP(resultslist, classpath):
@@ -26,7 +27,7 @@ def getRecall(resultslist, classpath):
 
 def getRecall2(resultslist, classpath):
     classpath = classpath.lstrip('http://127.0.0.1:5000')
-    classpath = 'D:/Dokumenty/CBIR/CorelDBCleanInput'+classpath
+    classpath = SEARCH_DIRECTORY_INPUT+classpath
     # print(classpath)
     numberofgoodcalassresults = getTP(resultslist, classpath)
     totalnumberofgoodimgindb = len(glob.glob1(classpath, "*.jpg"))
@@ -55,8 +56,8 @@ def getPrecisionAndAccuracyData(TPrate, tnumofgoodimgindb, tnumofres):
 def getQualityIndicators(input_image_path, results_list):
     # TODO: examine_input_image_path
     classpath = os.path.dirname(results_list[0][1])
-    print(input_image_path)
-    print(classpath)
+    # print(input_image_path)
+    # print(classpath)
     TP, FP = getTPandFP(input_image_path, results_list)
     n_of_res = len(results_list)
     precision = TP/n_of_res

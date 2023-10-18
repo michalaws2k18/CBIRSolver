@@ -104,11 +104,11 @@ def process_ml_solver(n_of_res, input_image_path, all_res=False, create_image=Tr
         n_of_res, extracted_features, SEARCH_DIRECTORY_ML, distanceManhattan)
     if create_image:
         createResultImage(closest_images, RESULT_IMAGE_PATH, n_of_res)
-    return closest_images
+    return closest_images[:n_of_res]
 
 
 @timeit
-def processCCVOnlySolver(n_of_res, input_image_path):
+def processCCVOnlySolver(n_of_res, input_image_path, create_image=True):
     print(input_image_path)
     f_path = findAlreadyExtractedFeatures(input_image_path, SEARCH_DIR_CCV)
     if f_path:
@@ -117,7 +117,8 @@ def processCCVOnlySolver(n_of_res, input_image_path):
         ccv_features = extract_CCV(input_image_path, CCV_N)
     closest_images = getTheClosestImages(
         n_of_res, ccv_features, SEARCH_DIR_CCV, distanceManhattanNorm)
-    createResultImage(closest_images, RESULT_IMAGE_PATH, n_of_res)
+    if create_image:
+        createResultImage(closest_images, RESULT_IMAGE_PATH, n_of_res)
     return closest_images
 
 
@@ -196,7 +197,7 @@ def processAllAlgorithms(n_of_res, input_image_path, createImage=False, measure_
     res_hist_gray_norm, search_time_9 = processHistSolverGreyNorm(
         n_of_res, input_image_path, norm=1, create_image=createImage)
     res_ml, search_time_2 = process_ml_solver(
-        n_of_res, input_image_path)[:n_of_res]
+        n_of_res, input_image_path)
     res_hist_equal, search_time_3 = processHistSolverEqual(
         n_of_res, input_image_path, 231, create_image=createImage)
     res_hist_equal_clahe, search_time_4 = processHistSolverEqual(
